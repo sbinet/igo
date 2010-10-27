@@ -5,7 +5,6 @@
 package main
 
 import (
-	"exp/eval"
 	"flag"
 	"fmt"
 	"go/parser"
@@ -14,6 +13,7 @@ import (
 	"os"
 	"readline"
 	//"bitbucket.org/binet/go-readline" /* cgo packages not goinstall-able*/
+	"exp/eval"
 	"path"
 )
 
@@ -43,46 +43,46 @@ func main() {
 	if *filename != "" {
 		data, err := ioutil.ReadFile(*filename)
 		if err != nil {
-			println(err.String())
+			fmt.Println(err.String())
 			os.Exit(1)
 		}
 		file, err := parser.ParseFile(*filename, data, 0)
 		if err != nil {
-			println(err.String())
+			fmt.Println(err.String())
 			os.Exit(1)
 		}
 		code, err := w.CompileDeclList(file.Decls)
 		if err != nil {
 			if list, ok := err.(scanner.ErrorList); ok {
 				for _, e := range list {
-					println(e.String())
+					fmt.Println(e.String())
 				}
 			} else {
-				println(err.String())
+				fmt.Println(err.String())
 			}
 			os.Exit(2)
 		}
 		_, err = code.Run()
 		if err != nil {
-			println(err.String())
+			fmt.Println(err.String())
 			os.Exit(3)
 		}
 		code, err = w.Compile("init()")
 		if code != nil {
 			_, err := code.Run()
 			if err != nil {
-				println(err.String())
+				fmt.Println(err.String())
 				os.Exit(4)
 			}
 		}
 		code, err = w.Compile("main()")
 		if err != nil {
-			println(err.String())
+			fmt.Println(err.String())
 			os.Exit(5)
 		}
 		_, err = code.Run()
 		if err != nil {
-			println(err.String())
+			fmt.Println(err.String())
 			os.Exit(6)
 		}
 		os.Exit(0)
@@ -97,16 +97,16 @@ func main() {
 		readline.AddHistory(*line)
 		code, err := w.Compile(*line+";")
 		if err != nil {
-			println(err.String())
+			fmt.Println(err.String())
 			continue
 		}
 		v,err := code.Run()
 		if err != nil {
-			println(err.String())
+			fmt.Println(err.String())
 			continue
 		}
 		if v!= nil {
-			println(v.String())
+			fmt.Println(v.String())
 		}
 	}
 }
