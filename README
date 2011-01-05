@@ -1,5 +1,10 @@
 A simple interactive Go interpreter built on exp/eval with some readline refinements
 
+Note
+====
+
+you'll need go-readline bindings from https://bitbucket.org/binet/go-readline
+
 Example
 =======
 
