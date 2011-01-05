@@ -1,6 +1,16 @@
 A simple interactive Go interpreter built on exp/eval with some readline refinements
 
-TODO:
+Example
+=======
+
+::
+
+  $ igo
+  igo> func f() { println("hello world") }
+  igo> f()
+  hello world
+
+TODO
 =====
 
 - investigate the replacement of readline with linenoise (or go-linoise?)
