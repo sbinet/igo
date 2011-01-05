@@ -1,1 +1,17 @@
-A simple interactive Go interpreter built on exp/eval with some readline rafinements
+A simple interactive Go interpreter built on exp/eval with some readline refinements
+
+TODO:
+=====
+
+- investigate the replacement of readline with linenoise (or go-linoise?)
+
+- implement code completion
+
+  - with rlcompleter
+
+  - with linenoise
+
+  - with gocode
+
+- code colorization ?
+
