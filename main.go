@@ -12,8 +12,7 @@ import (
 	"go/token"
 	"io/ioutil"
 	"os"
-	"readline"
-	//"bitbucket.org/binet/go-readline" /* cgo packages not goinstall-able*/
+	"bitbucket.org/binet/go-readline"
 	"exp/eval"
 	"path"
 )
