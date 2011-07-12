@@ -5,15 +5,16 @@
 package main
 
 import (
+	"bitbucket.org/binet/go-readline"
+	"bitbucket.org/binet/go-eval/pkg/eval"
 	"flag"
 	"fmt"
+	"go/ast"
 	"go/parser"
 	"go/scanner"
 	"go/token"
 	"io/ioutil"
 	"os"
-	"bitbucket.org/binet/go-readline"
-	"exp/eval"
 	"path"
 )
 
@@ -23,6 +24,7 @@ var filename = flag.String("f", "", "file to run")
 func init() {
 	readline.ParseAndBind("tab: complete")
 	readline.ParseAndBind("set show-all-if-ambiguous On")
+	//readline.SetAttemptedCompletionFunction()
 	fmt.Println(`
 ********************************
 ** Interactive Go interpreter **
@@ -52,7 +54,9 @@ func main() {
 			fmt.Println(err.String())
 			os.Exit(1)
 		}
-		code, err := w.CompileDeclList(fset, file.Decls)
+		files := []*ast.File{file}
+		println("\n\n--- compile-package ---")
+		code, err := w.CompilePackage(fset, files, "main")
 		if err != nil {
 			if list, ok := err.(scanner.ErrorList); ok {
 				for _, e := range list {
@@ -63,19 +67,15 @@ func main() {
 			}
 			os.Exit(1)
 		}
-		_, err = code.Run()
-		if err != nil {
-			fmt.Println(err.String())
-			os.Exit(1)
-		}
-		code, err = w.Compile(fset, "init()")
-		if code != nil {
-			_, err := code.Run()
-			if err != nil {
-				fmt.Println(err.String())
-				os.Exit(1)
-			}
-		}
+		println("--- compile-package --- [done]\n\n")
+		// code, err = w.Compile(fset, "init()")
+		// if code != nil {
+		// 	_, err := code.Run()
+		// 	if err != nil {
+		// 		fmt.Println(err.String())
+		// 		os.Exit(1)
+		// 	}
+		// }
 		code, err = w.Compile(fset, "main()")
 		if err != nil {
 			fmt.Println(err.String())
@@ -89,25 +89,52 @@ func main() {
 		os.Exit(0)
 	}
 
-	prompt := "igo> "
+	var ierr os.Error = nil // previous interpreter error
+	ps1 := "igo> "
+	ps2 := "...  "
+	prompt := &ps1
+	codelet := ""
 	for {
-		line := readline.ReadLine(&prompt)
+		line := readline.ReadLine(prompt)
 		if line == nil {
 			break; //os.Exit(0)
 		}
-		readline.AddHistory(*line)
-		code, err := w.Compile(fset, *line+";")
+		if *line == "" || *line == ";" {
+			// no more input
+			prompt = &ps1
+		}
+		codelet += *line
+		readline.AddHistory(codelet)
+		code, err := w.Compile(fset, codelet+";")
 		if err != nil {
-			fmt.Println(err.String())
+			if ierr != nil && prompt == &ps1 {
+				fmt.Println(err.String())
+				fmt.Printf("(error %T)\n",err)
+				// reset state
+				codelet = ""
+				ierr = nil
+				prompt = &ps1
+				continue
+			}
+			// maybe multi-line command ?
+			prompt = &ps2
+			ierr = err
+			codelet += "\n"
 			continue
 		}
 		v,err := code.Run()
 		if err != nil {
 			fmt.Println(err.String())
+			fmt.Printf("(error %T)\n",err)
+			codelet = ""
 			continue
 		}
 		if v!= nil {
 			fmt.Println(v.String())
 		}
+//	resetstate:
+		// reset state
+		codelet = ""
+		ierr = nil
 	}
 }
