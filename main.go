@@ -55,7 +55,6 @@ func main() {
 			os.Exit(1)
 		}
 		files := []*ast.File{file}
-		println("\n\n--- compile-package ---")
 		code, err := w.CompilePackage(fset, files, "main")
 		if err != nil {
 			if list, ok := err.(scanner.ErrorList); ok {
@@ -67,15 +66,6 @@ func main() {
 			}
 			os.Exit(1)
 		}
-		println("--- compile-package --- [done]\n\n")
-		// code, err = w.Compile(fset, "init()")
-		// if code != nil {
-		// 	_, err := code.Run()
-		// 	if err != nil {
-		// 		fmt.Println(err.String())
-		// 		os.Exit(1)
-		// 	}
-		// }
 		code, err = w.Compile(fset, "main()")
 		if err != nil {
 			fmt.Println(err.String())
@@ -94,6 +84,15 @@ func main() {
 	ps2 := "...  "
 	prompt := &ps1
 	codelet := ""
+	// initialize main package
+	{
+		codelet := "package main\n"
+		f, err := parser.ParseFile(fset, "input", codelet, 0)
+		code, err := w.CompilePackage(fset, []*ast.File{f}, "main")
+		if err == nil {
+			code.Run()
+		}
+	}
 	for {
 		line := readline.ReadLine(prompt)
 		if line == nil {
