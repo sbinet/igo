@@ -5,8 +5,8 @@
 package main
 
 import (
-	"bitbucket.org/binet/go-readline"
 	"bitbucket.org/binet/go-eval/pkg/eval"
+	"bitbucket.org/binet/go-readline"
 	"flag"
 	"fmt"
 	"go/ast"
@@ -31,11 +31,11 @@ func init() {
 ********************************
 
 `)
-	readline.ReadHistoryFile(path.Join(os.Getenv("HOME"),".go.history"))
+	readline.ReadHistoryFile(path.Join(os.Getenv("HOME"), ".go.history"))
 }
 
 func atexit() {
-	readline.WriteHistoryFile(path.Join(os.Getenv("HOME"),".go.history"))
+	readline.WriteHistoryFile(path.Join(os.Getenv("HOME"), ".go.history"))
 }
 
 func main() {
@@ -46,12 +46,12 @@ func main() {
 	if *filename != "" {
 		data, err := ioutil.ReadFile(*filename)
 		if err != nil {
-			fmt.Println(err.String())
+			fmt.Println(err.Error())
 			os.Exit(1)
 		}
 		file, err := parser.ParseFile(fset, *filename, data, 0)
 		if err != nil {
-			fmt.Println(err.String())
+			fmt.Println(err.Error())
 			os.Exit(1)
 		}
 		files := []*ast.File{file}
@@ -59,27 +59,27 @@ func main() {
 		if err != nil {
 			if list, ok := err.(scanner.ErrorList); ok {
 				for _, e := range list {
-					fmt.Println(e.String())
+					fmt.Println(e.Error())
 				}
 			} else {
-				fmt.Println(err.String())
+				fmt.Println(err.Error())
 			}
 			os.Exit(1)
 		}
 		code, err = w.Compile(fset, "main()")
 		if err != nil {
-			fmt.Println(err.String())
+			fmt.Println(err.Error())
 			os.Exit(1)
 		}
 		_, err = code.Run()
 		if err != nil {
-			fmt.Println(err.String())
+			fmt.Println(err.Error())
 			os.Exit(1)
 		}
 		os.Exit(0)
 	}
 
-	var ierr os.Error = nil // previous interpreter error
+	var ierr error = nil // previous interpreter error
 	ps1 := "igo> "
 	ps2 := "...  "
 	prompt := &ps1
@@ -96,7 +96,7 @@ func main() {
 	for {
 		line := readline.ReadLine(prompt)
 		if line == nil {
-			break; //os.Exit(0)
+			break //os.Exit(0)
 		}
 		if *line == "" || *line == ";" {
 			// no more input
@@ -107,8 +107,8 @@ func main() {
 		code, err := w.Compile(fset, codelet+";")
 		if err != nil {
 			if ierr != nil && prompt == &ps1 {
-				fmt.Println(err.String())
-				fmt.Printf("(error %T)\n",err)
+				fmt.Println(err.Error())
+				fmt.Printf("(error %T)\n", err)
 				// reset state
 				codelet = ""
 				ierr = nil
@@ -121,17 +121,17 @@ func main() {
 			codelet += "\n"
 			continue
 		}
-		v,err := code.Run()
+		v, err := code.Run()
 		if err != nil {
-			fmt.Println(err.String())
-			fmt.Printf("(error %T)\n",err)
+			fmt.Println(err.Error())
+			fmt.Printf("(error %T)\n", err)
 			codelet = ""
 			continue
 		}
-		if v!= nil {
+		if v != nil {
 			fmt.Println(v.String())
 		}
-//	resetstate:
+		//	resetstate:
 		// reset state
 		codelet = ""
 		ierr = nil
