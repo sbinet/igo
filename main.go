@@ -5,8 +5,8 @@
 package main
 
 import (
-	"bitbucket.org/binet/go-eval/pkg/eval"
-	"bitbucket.org/binet/go-readline/pkg/readline"
+	"github.com/sbinet/go-eval/pkg/eval"
+	"github.com/sbinet/go-readline/pkg/readline"
 	"flag"
 	"fmt"
 	"go/ast"
