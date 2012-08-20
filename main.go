@@ -24,7 +24,7 @@ var filename = flag.String("f", "", "file to run")
 func init() {
 	readline.ParseAndBind("tab: complete")
 	readline.ParseAndBind("set show-all-if-ambiguous On")
-	//readline.SetAttemptedCompletionFunction()
+
 	fmt.Println(`
 ********************************
 ** Interactive Go interpreter **
