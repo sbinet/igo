@@ -140,7 +140,7 @@ func main() {
 			// no more input
 			prompt = &ps1
 		}
-		fmt.Printf("\n[%v]\n",line)
+
 		codelet += line
 		if codelet != "" {
 			term.AppendHistory(codelet)
