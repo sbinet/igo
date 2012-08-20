@@ -25,9 +25,9 @@ var term *liner.State = nil
 
 func init() {
 	fmt.Println(`
-********************************
-** Interactive Go interpreter **
-********************************
+*********************************************
+** Interactive Go interpreter (with liner) **
+*********************************************
 
 `)
 	term = liner.NewLiner()
