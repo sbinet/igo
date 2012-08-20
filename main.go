@@ -6,7 +6,7 @@ package main
 
 import (
 	"github.com/sbinet/go-eval/pkg/eval"
-	"github.com/sbinet/go-readline/pkg/readline"
+	"github.com/sbinet/liner"
 	"flag"
 	"fmt"
 	"go/ast"
@@ -21,9 +21,11 @@ import (
 var fset = token.NewFileSet()
 var filename = flag.String("f", "", "file to run")
 
+var term *liner.State = nil
+
 func init() {
-	readline.ParseAndBind("tab: complete")
-	readline.ParseAndBind("set show-all-if-ambiguous On")
+	//readline.ParseAndBind("tab: complete")
+	//readline.ParseAndBind("set show-all-if-ambiguous On")
 	//readline.SetAttemptedCompletionFunction()
 	fmt.Println(`
 ********************************
@@ -31,11 +33,41 @@ func init() {
 ********************************
 
 `)
-	readline.ReadHistoryFile(path.Join(os.Getenv("HOME"), ".go.history"))
+	term = liner.NewLiner()
+
+	fname := path.Join(os.Getenv("HOME"), ".go.history")
+	f, err := os.Open(fname)
+	if err != nil {
+		fmt.Printf("**warning: could not access history file [%s]\n", fname)
+		return
+	}
+	defer f.Close()
+	_, err = term.ReadHistory(f)
+	if err != nil {
+		fmt.Printf("**warning: could not read history file [%s]\n", fname)
+		return
+	}
 }
 
 func atexit() {
-	readline.WriteHistoryFile(path.Join(os.Getenv("HOME"), ".go.history"))
+	fname := path.Join(os.Getenv("HOME"), ".go.history")
+	f, err := os.OpenFile(fname, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+	if err != nil {
+		fmt.Printf("**warning: could not access history file [%s]\n", fname)
+		return
+	}
+	defer f.Close()
+	_, err = term.WriteHistory(f)
+	if err != nil {
+		fmt.Printf("**warning: could not write history file [%s]\n", fname)
+		return
+	}
+
+	err = term.Close()
+	if err != nil {
+		fmt.Printf("**warning: problem closing term: %v\n", err)
+		return
+	}
 }
 
 func main() {
@@ -93,17 +125,26 @@ func main() {
 			code.Run()
 		}
 	}
+
 	for {
-		line := readline.ReadLine(prompt)
-		if line == nil {
+		line, err := term.Prompt(*prompt)
+		if err != nil {
+			if err != liner.ErrExitMainLoop {
+				ierr = err
+			} else {
+				ierr = nil
+			}
 			break //os.Exit(0)
 		}
-		if *line == "" || *line == ";" {
+		if line == "" || line == ";" {
 			// no more input
 			prompt = &ps1
 		}
-		codelet += *line
-		readline.AddHistory(codelet)
+		fmt.Printf("\n[%v]\n",line)
+		codelet += line
+		if codelet != "" {
+			term.AppendHistory(codelet)
+		}
 		code, err := w.Compile(fset, codelet+";")
 		if err != nil {
 			if ierr != nil && prompt == &ps1 {
