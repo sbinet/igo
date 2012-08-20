@@ -17,6 +17,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 )
 
 var fset = token.NewFileSet()
@@ -141,7 +142,9 @@ func main() {
 
 		codelet += line
 		if codelet != "" {
-			term.AppendHistory(codelet)
+			for _, ll := range strings.Split(codelet, "\n") {
+				term.AppendHistory(ll)
+			}
 		}
 		code, err := w.Compile(fset, codelet+";")
 		if err != nil {
