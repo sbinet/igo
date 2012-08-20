@@ -26,9 +26,9 @@ func init() {
 	readline.ParseAndBind("set show-all-if-ambiguous On")
 
 	fmt.Println(`
-********************************
-** Interactive Go interpreter **
-********************************
+************************************************
+** Interactive Go interpreter (with readline) **
+************************************************
 
 `)
 	readline.ReadHistoryFile(path.Join(os.Getenv("HOME"), ".go.history"))
