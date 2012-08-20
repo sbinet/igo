@@ -13,6 +13,7 @@ import (
 	"go/parser"
 	"go/scanner"
 	"go/token"
+	"io"
 	"io/ioutil"
 	"os"
 	"path"
@@ -126,7 +127,7 @@ func main() {
 	for {
 		line, err := term.Prompt(*prompt)
 		if err != nil {
-			if err != liner.ErrExitMainLoop {
+			if err != io.EOF {
 				ierr = err
 			} else {
 				ierr = nil
