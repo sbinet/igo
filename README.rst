@@ -1,12 +1,10 @@
-A simple interactive Go interpreter built on exp/eval with some readline refinements
+igo
+===
 
-Note
-====
-
-you'll need go-readline bindings from https://github.com/sbinet/go-readline
+A simple interactive Go interpreter built on exp/eval with some readline-like refinements
 
 Example
-=======
+-------
 
 ::
 
@@ -15,18 +13,13 @@ Example
   igo> f()
   hello world
 
-TODO
-=====
 
-- investigate the replacement of readline with linenoise (or go-linoise?)
+TODO
+----
 
 - implement code completion
 
-  - with rlcompleter
-
-  - with linenoise
-
-  - with gocode
+  - with gocode ?
 
 - code colorization ?
 
