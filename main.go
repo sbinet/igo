@@ -5,8 +5,6 @@
 package main
 
 import (
-	"github.com/sbinet/go-eval/pkg/eval"
-	"github.com/sbinet/liner"
 	"flag"
 	"fmt"
 	"go/ast"
@@ -18,6 +16,9 @@ import (
 	"os"
 	"path"
 	"strings"
+
+	eval "github.com/sbinet/go-eval"
+	"github.com/sbinet/liner"
 )
 
 var fset = token.NewFileSet()
