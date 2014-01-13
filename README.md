@@ -3,8 +3,8 @@ igo
 
 A simple interactive Go interpreter built on [go-eval](github.com/sbinet/go-eval) with some readline-like refinements
 
-Example
--------
+
+## Example
 
 ```sh
 $ igo
@@ -13,9 +13,12 @@ igo> f()
 hello world
 ```
 
+## Documentation
 
-TODO
-----
+http://godoc.org/github.com/sbinet/igo
+
+
+## TODO
 
 - implement code completion
 
