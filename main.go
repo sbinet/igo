@@ -71,6 +71,11 @@ func atexit() {
 }
 
 func main() {
+	rc := run()
+	os.Exit(rc)
+}
+
+func run() int {
 	defer atexit()
 
 	flag.Parse()
@@ -79,12 +84,12 @@ func main() {
 		data, err := ioutil.ReadFile(*filename)
 		if err != nil {
 			fmt.Println(err.Error())
-			os.Exit(1)
+			return 1
 		}
 		file, err := parser.ParseFile(fset, *filename, data, 0)
 		if err != nil {
 			fmt.Println(err.Error())
-			os.Exit(1)
+			return 1
 		}
 		files := []*ast.File{file}
 		code, err := w.CompilePackage(fset, files, "main")
@@ -96,19 +101,19 @@ func main() {
 			} else {
 				fmt.Println(err.Error())
 			}
-			os.Exit(1)
+			return 1
 		}
 		code, err = w.Compile(fset, "main()")
 		if err != nil {
 			fmt.Println(err.Error())
-			os.Exit(1)
+			return 1
 		}
 		_, err = code.Run()
 		if err != nil {
 			fmt.Println(err.Error())
-			os.Exit(1)
+			return 1
 		}
-		os.Exit(0)
+		return 0
 	}
 
 	var ierr error = nil // previous interpreter error
@@ -179,4 +184,6 @@ func main() {
 		codelet = ""
 		ierr = nil
 	}
+
+	return 0
 }
