@@ -17,8 +17,8 @@ import (
 	"path"
 	"strings"
 
+	"github.com/peterh/liner"
 	eval "github.com/sbinet/go-eval"
-	"github.com/sbinet/liner"
 )
 
 var fset = token.NewFileSet()
