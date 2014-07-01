@@ -14,7 +14,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/peterh/liner"
@@ -36,7 +36,7 @@ func init() {
 `)
 	term = liner.NewLiner()
 
-	histname = path.Join(os.Getenv("HOME"), ".go.history")
+	histname = filepath.Join(os.Getenv("HOME"), ".go.history")
 
 	fname := histname
 	f, err := os.Open(fname)
