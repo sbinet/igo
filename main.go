@@ -23,6 +23,7 @@ import (
 
 var fset = token.NewFileSet()
 var filename = flag.String("f", "", "file to run")
+var histname string
 
 var term *liner.State = nil
 
@@ -35,7 +36,9 @@ func init() {
 `)
 	term = liner.NewLiner()
 
-	fname := path.Join(os.Getenv("HOME"), ".go.history")
+	histname = path.Join(os.Getenv("HOME"), ".go.history")
+
+	fname := histname
 	f, err := os.Open(fname)
 	if err != nil {
 		fmt.Printf("**warning: could not access history file [%s]\n", fname)
@@ -50,7 +53,7 @@ func init() {
 }
 
 func atexit() {
-	fname := path.Join(os.Getenv("HOME"), ".go.history")
+	fname := histname
 	f, err := os.OpenFile(fname, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil {
 		fmt.Printf("**warning: could not access history file [%s]\n", fname)
