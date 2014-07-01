@@ -35,4 +35,4 @@ http://godoc.org/github.com/sbinet/igo
 
 - code colorization ?
 
-- see TODOs of [go-eval](github.com/sbinet/go-eval)
+- see TODOs of [go-eval](https://github.com/sbinet/go-eval)
