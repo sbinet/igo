@@ -11,6 +11,15 @@ $ igo
 igo> func f() { println("hello world") }
 igo> f()
 hello world
+igo> type Foo struct {
+...   A int
+...  }
+...  
+igo> foo := Foo{A:32}
+igo> foo
+{32}
+igo> foo.A
+32
 ```
 
 ## Documentation
@@ -26,3 +35,4 @@ http://godoc.org/github.com/sbinet/igo
 
 - code colorization ?
 
+- see TODOs of [go-eval](github.com/sbinet/go-eval)
