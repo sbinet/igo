@@ -1,7 +1,7 @@
 igo
 ===
 
-A simple interactive Go interpreter built on [go-eval](github.com/sbinet/go-eval) with some readline-like refinements
+A simple interactive Go interpreter built on [go-eval](https://github.com/sbinet/go-eval) with some readline-like refinements
 
 
 ## Example
